@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/edit.css') }}">
+
+    <script>
+
+        var state = {}
+
+        function htmlDecode(input) {
+            const doc = new DOMParser().parseFromString(input, "text/html");
+            return doc.documentElement.textContent;
+        }
+
+        function init() {
+            const stateJson = htmlDecode("{{madlib_str}}");
+            state = JSON.parse(stateJson);
+        }
+
+        async function updateFilling(wordKey, replaceWith) {
+            for (const filling of state.fillings) {
+                if (filling.baseWordKey == wordKey) {
+                    filling.replaceWith = replaceWith;
+                    break;
+                }
+            }
+
+            save();
+        }
+
+        async function save() {
+            try {
+                const stateStr = JSON.stringify(state);
+                const res = await fetch(window.location, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: stateStr,
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function xport() {
+            try {
+                document.querySelector("#loading").style.display = "flex";
+                const stateStr = JSON.stringify(state);
+                const id = window.location.pathname.split('/').pop()
+                const res = await fetch(`/export/${id}`, {
+                    method: "POST",
+                });
+                window.location = "/";
+            } catch (error) {
+                console.error(error);
+                alert("There was a problem please go find Tyler");
+                document.querySelector("#loading").style.display = "none";
+            }
+        }
+    </script>
+</head>
+
+<body onload="init();">
+    <div id="loading">Creating karaoke file, please wait ...</div>
+    <span class="nav-bar">
+        <span class="icon-wrapper">
+            <img class="icon unhover" src="{{url_for('static', filename='icons/back.svg')}}" />
+            <img class="icon hover" src="{{url_for('static', filename='icons/back_hover.svg')}}"
+                onclick="window.location = '/'" />
+        </span>
+    </span>
+
+    <span class="form">
+        <span class="names">
+            <span class="labels">
+                <p class="label">Singer:</p>
+                <p class="label">You:</p>
+            </span>
+            <span class="inputs">
+                <input 
+                    type="text"
+                    value="{{madlib.singer_name}}"
+                    onkeyup="state.singer_name = this.value; save();"
+                />
+                <input 
+                    type="text"
+                    value="{{madlib.author_name}}"
+                    onkeyup="state.author_name = this.value; save();"
+                />
+            </span>
+        </span>
+
+        <p class="prompt-title">Let's Get MAD<span class="reg">&reg;</span></p>
+        <span class="prompts">
+            <span class="labels">
+                {% for filling in madlib.fillings %}
+                    <p class="label">{{filling.prompt}}:</p>
+                {% endfor %}
+            </span>
+            <span class="inputs">
+                {% for filling in madlib.fillings %}
+                    <input 
+                        type="text" 
+                        value="{{filling.replaceWith}}"
+                        onkeyup="updateFilling('{{filling.baseWordKey}}', this.value)"
+                    />
+                {% endfor %}
+            </span>
+        </span>
+
+        <button class="submit" onclick="xport();">Done!</button>
+    </span>
+</body>
+
+</html>

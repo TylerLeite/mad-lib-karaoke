@@ -1,0 +1,93 @@
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: 0;
+
+    background-color: #333;
+    color: white;
+}
+
+body {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.title {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    font-size: 48px;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+}
+
+.list {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+}
+
+.list-item {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    font-size: 24px;
+    margin: 1.25vh 0;
+}
+
+.list-item, .list-item * {
+    cursor: pointer;
+}
+
+.list-item:hover, .list-item:hover * {
+    color: #33ff55;
+}
+
+.list-item .hover {
+    display: none;
+}
+
+.list-item:hover .hover {
+    display: inline-flex;
+}
+
+.list-item:hover .unhover {
+    display: none;
+}
+
+.nav-bar {
+    width: 98.5vw;
+    padding-left: 1.5vw;
+    padding-top: 1.5vh;
+}
+
+.icon-wrapper .hover {
+    display: none;
+}
+
+.icon-wrapper:hover .hover {
+    display: inline-flex;
+}
+
+.icon-wrapper:hover .unhover {
+    display: none;
+}
+
+img.icon {
+    height: 24px;
+    width: auto;
+
+    margin-right: 10px; 
+}
+
+.list-item > p {
+    display: flex;
+    align-items: center;
+}
+
+.reg {
+    font-size: 12px;
+    align-self: start;
+}

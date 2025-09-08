@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/madlibs.css') }}">
+</head>
+
+<body>
+    <span class="nav-bar">
+        <span class="icon-wrapper">
+            <img class="icon unhover" src="{{url_for('static', filename='icons/back.svg')}}" />
+            <img class="icon hover" src="{{url_for('static', filename='icons/back_hover.svg')}}"
+                onclick="window.location = '/'" />
+        </span>
+    </span>
+
+    <span class="list">
+        {% for madlib in madlibs %}
+        <span class="list-item" onclick="window.location='/madlib/edit/{{madlib.id}}'">
+            <p>{{madlib.song_name}}</p>
+            <p>sung by: {{madlib.singer_name}}</p>
+            <p>filled in by: {{madlib.author_name}}</p>
+        </span>
+        {% endfor %}
+    </span>
+</body>
+
+</html>

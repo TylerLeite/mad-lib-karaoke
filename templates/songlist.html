@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/songlist.css') }}">
+</head>
+
+<body>
+    <span class="nav-bar">
+        <span class="icon-wrapper">
+            <img class="icon unhover" src="{{url_for('static', filename='icons/back.svg')}}" />
+            <img class="icon hover" src="{{url_for('static', filename='icons/back_hover.svg')}}" 
+                onclick="window.location = '/'"
+            />
+        </span>
+    </span>
+
+    <span class="list">
+        {% for song in songs %}
+        <span
+            class="list-item"
+            onclick="window.location='/{{mode}}/{{song.id}}'"
+        >
+            <p>{{song.artist}}</p>
+            <p>-</p>
+            <p>{{song.title}}</p>
+        </span>
+        {% endfor %}
+    </span>
+</body>
+</html>

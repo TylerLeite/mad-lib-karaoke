@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+</head>
+
+<body>
+    <span class="title">Mad Lib<span class="reg">&reg;</span>&nbsp;Karaoke</span>
+    <span class="list">
+        <span
+            class="list-item"
+            onclick="window.location='/madlib'"
+        >
+            <img class="icon unhover" src="{{url_for('static', filename='icons/new.svg')}}" />
+            <img class="icon hover" src="{{url_for('static', filename='icons/new_hover.svg')}}" />
+            <p>Create a new Mad Lib<span class="reg">&reg;</span></p>
+        </span>
+
+        <span 
+            class="list-item"
+            onclick="window.location='/madlibs'"
+        >
+            <img class="icon unhover" src="{{url_for('static', filename='icons/edit.svg')}}" />
+            <img class="icon hover" src="{{url_for('static', filename='icons/edit_hover.svg')}}" />
+            <p>Edit an existing Mad Lib<span class="reg">&reg;</span></p>
+        </span>
+
+        <span 
+            class="list-item"
+            onclick="window.location='/config'"
+
+        > 
+            <img class="icon unhover" src="{{url_for('static', filename='icons/config.svg')}}" />
+            <img class="icon hover" src="{{url_for('static', filename='icons/config_hover.svg')}}" />
+            <p>Config a Meta Mad Lib<span class="reg">&reg;</span></p>
+        </span>
+
+        <!-- <span class="list-item">
+            <img class="icon unhover" src="{{url_for('static', filename='icons/manage.svg')}}" />
+            <img class="icon hover" src="{{url_for('static', filename='icons/manage_hover.svg')}}" />
+            <p>Manage the queue</p>
+        </span> -->
+    </span>
+</body>
+</html>

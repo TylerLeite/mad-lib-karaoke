@@ -1,0 +1,2 @@
+Images in this directory are material icons from https://fonts.google.com/icons
+Released under Apache License V 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt)

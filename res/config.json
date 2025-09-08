@@ -1,0 +1,7 @@
+{
+    "karaoke_dir": "res/midi/karaoke-files/",
+    "madlib_dir": "res/midi/madlib-files/",
+    "madlib_template_dir": "res/madlib-templates/",
+    "filled_madlib_dir": "res/filled-madlibs/",
+    "song_index": "res/song_index.json"
+}

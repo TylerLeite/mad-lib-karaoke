@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/config.css') }}">
+
+    <script>
+        // QoL todos:
+        // * history of changes, undo, redo
+        // * reset replacesWith text to original text
+        // * change a color manually
+        // * hover row -> highlight corresponding words
+        // * line breaks based on KarCommands
+
+        var state = {
+            selectedWords: [],
+            colorCounter: 1,
+            currentColor: nToColor(0)
+        }
+
+        function htmlDecode(input) {
+            const doc = new DOMParser().parseFromString(input, "text/html");
+            return doc.documentElement.textContent;
+        }
+
+        function init() {
+            // Fetch existing config
+            const existingConfig = JSON.parse(htmlDecode("{{existing_config}}"));
+            if (JSON.stringify(existingConfig) !== "{}") {
+                state = existingConfig;
+            }
+            updateLibsDOM();
+            updateLyricsDOM();
+        }
+
+        async function save() {
+            // Write changes to disk
+            try {
+                const stateStr = JSON.stringify(state);
+                const res = await fetch(window.location, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: stateStr,
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function nToColor(n) {
+            const phi = 137.5;
+            return `hsl(${n*phi%360}deg, 100%, ${n > 17 ? 50-(n-17) : 50+2.5*n}%)`
+        }
+
+        function hover(word) {
+            for (const w of state.selectedWords) {
+                if (w.baseWordKey == word) {
+                    return;
+                }
+            }
+
+            likeWords = document.querySelectorAll(`[data-text=${word}]`);
+            for (let el of likeWords) {
+                el.style.color = state.currentColor;
+            }
+        }
+
+        function unhover(word) {
+            for (const w of state.selectedWords) {
+                if (w.baseWordKey == word) {
+                    return;
+                }
+            }
+
+            likeWords = document.querySelectorAll(`[data-text=${word}]`);
+            for (let el of likeWords) {
+                if (el.getAttribute("data-selected") === true) {
+                    continue;
+                }
+
+                el.style.color = "white";
+            }
+        }
+
+        function selectWord(attr) {
+            for (const w of state.selectedWords) {
+                if (w.baseWordKey == attr) {
+                    return;
+                }
+            }
+
+            const text = attr.replace(/[^a-z]/gi, '').toLowerCase();
+            state.selectedWords.push({
+                baseWordKey: attr,
+                baseWordText: text,
+                prompt: undefined,
+                replaceWith: text,
+                color: state.currentColor,
+            });
+
+            state.currentColor = nToColor(state.colorCounter);
+            state.colorCounter++;
+
+            updateLibsDOM();
+        }
+
+        function makeLibsItemElement(idx, word) {
+            const libs_item = document.createElement("span");
+            libs_item.setAttribute("data-attr", word.baseWordKey)
+            libs_item.classList.add("libs-item");
+
+            // del icon
+            const icon_holder = document.createElement("span");
+            icon_holder.classList.add("icon-holder");
+            libs_item.appendChild(icon_holder);
+
+            const icon_hover = document.createElement("img");
+            icon_hover.classList.add("icon", "hover");
+            icon_hover.src = "{{url_for('static', filename='icons/delete_hover.svg')}}";
+            icon_holder.appendChild(icon_hover);
+            icon_hover.onclick = function () {
+                const likeWords = document.querySelectorAll(`[data-text=${state.selectedWords[idx].baseWordKey}]`);
+                for (let el of likeWords) {
+                    el.innerHTML = state.selectedWords[idx].baseWordText + "&nbsp;";
+                    el.style.color = "white";
+                }
+                state.selectedWords.splice(idx, 1);
+                save();
+                updateLibsDOM();
+            }
+
+            const icon_unhover = document.createElement("img");
+            icon_unhover.classList.add("icon", "unhover");
+            icon_unhover.src = "{{url_for('static', filename='icons/delete.svg')}}";
+            icon_holder.appendChild(icon_unhover);
+
+            // color icon
+            const icon = document.createElement("span");
+            icon.classList.add("icon");
+            icon.style.background = word.color;
+            icon_holder.appendChild(icon);
+
+            // prompt
+            const prompt = document.createElement("input");
+            prompt.classList.add("prompt");
+            prompt.type = "text";
+            if (typeof word.prompt !== "undefined") {
+                prompt.value = word.prompt;
+            }
+            prompt.placeholder = "<enter prompt>";
+            prompt.onkeyup = function () {
+                state.selectedWords[idx].prompt = this.value;
+                save();
+            }
+            libs_item.appendChild(prompt);
+
+            // replaces
+            const replaces = document.createElement("input");
+            replaces.classList.add("replaces");
+            replaces.style.color = word.color;
+            replaces.type = "text";
+            replaces.value = word.replaceWith;
+            libs_item.appendChild(replaces);
+            replaces.onkeyup = function () {
+                const likeWords = document.querySelectorAll(`[data-text=${word.baseWordKey}]`);
+                for (let el of likeWords) {
+                    el.innerHTML = this.value + "&nbsp;";
+                }
+                
+                state.selectedWords[idx].replaceWith = this.value;
+                save();
+            }
+
+            return libs_item;
+        }
+
+        function updateLibsDOM() {
+            const libs = document.querySelector("#libs");
+            libs.innerHTML = "";
+
+            for (let i in state.selectedWords) {
+                const word = state.selectedWords[i]
+                libs.appendChild(makeLibsItemElement(i, word));
+            }
+        }
+
+        function updateLyricsDOM() {
+            for (const word of state.selectedWords) {
+                const likeWords = document.querySelectorAll(`[data-text=${word.baseWordKey}]`);
+                for (let el of likeWords) {
+                    el.innerHTML = word.replaceWith + "&nbsp;";
+                    el.style.color = word.color;
+                }
+            }
+        }
+    </script>
+</head>
+
+<body onload="init();">
+    <span class="nav-bar">
+        <span class="icon-wrapper">
+            <img class="icon unhover" src="{{url_for('static', filename='icons/home.svg')}}" />
+            <img class="icon hover" src="{{url_for('static', filename='icons/home_hover.svg')}}"
+                onclick="window.location = '/'" />
+        </span>
+    </span>
+
+    <div class="wrapper">
+        <span class="lyrics">
+            {% for line in lyrics %}
+                <span class="line">
+                    {% for word in line %}
+                        <p 
+                            data-index="{{word.__repr__()}}" 
+                            data-text="{{word.attr}}"
+                            onmouseover="hover('{{word.attr}}')"
+                            onmouseout="unhover('{{word.attr}}')"
+                            onclick="selectWord('{{word.attr}}')"
+                        >
+                            {{ word.word }}{{ word.punctuation }}&nbsp;
+                        </p>
+                    {% endfor %}
+                </span>
+            {% endfor %}
+        </span>
+
+        <span id="libs" class="libs">
+            <!-- filled by code -->
+        </span>
+    </div>
+</body>
+
+</html>

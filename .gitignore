@@ -1,0 +1,16 @@
+.env
+.old
+.DS_Store
+
+res/filled-madlibs/*
+res/madlib-templates/*
+res/midi/karaoke-files/*
+res/midi/madlib-files-files/*
+!res/filled-madlibs/.placeholder
+!res/madlib-templates/.placeholder
+!res/midi/karaoke-files/.placeholder
+!res/midi/madlib-files-files/.placeholder
+
+res/song_index.json
+
+__pycache__
