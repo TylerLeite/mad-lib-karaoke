@@ -5,7 +5,7 @@
 res/filled-madlibs/*
 res/madlib-templates/*
 res/midi/karaoke-files/*
-res/midi/madlib-files-files/*
+res/midi/madlib-files/*
 !res/filled-madlibs/.placeholder
 !res/madlib-templates/.placeholder
 !res/midi/karaoke-files/.placeholder

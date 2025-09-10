@@ -8,7 +8,7 @@ DB = {}
 def initdb(CFG):
     DB["config"] = CFG
     with open(DB["config"]["song_index"], "rb") as json_file:
-        DB["songs"] = json.load(json_file)
+        DB["songs"] = [song for song in json.load(json_file) if not "hidden" in song]
 
 def get_template_str(song_id):
     template_filen = f'{DB["config"]["madlib_template_dir"]}{song_id}.json'
@@ -33,10 +33,14 @@ def get_config():
     return DB["config"]
 
 def get_song(id):
-    return get_songs()[int(id)]
+    for song in get_songs():
+        if song["id"] == id:
+            return song
+    return None
 
 def get_songs():
-    return DB["songs"]
+    return sorted(DB["songs"], key=lambda x: x["artist"])
+    # return DB["songs"]
 
 def get_madlibs():
     madlib_dir = f'{DB["config"]["filled_madlib_dir"]}'
@@ -67,7 +71,7 @@ def madlib_create(song_id):
     madlib_entry = {
         "id": madlib_id,
         "song": song_id,
-        "song_name": get_songs()[int(song_id)]["title"],
+        "song_name": get_song(song_id)["title"],
         "singer_name": "",
         "author_name": "",
         "fillings": fillings,
