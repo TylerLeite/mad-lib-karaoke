@@ -11,6 +11,8 @@ res/midi/madlib-files/*
 !res/midi/karaoke-files/.placeholder
 !res/midi/madlib-files-files/.placeholder
 
+test.py
+
 res/song_index.json
 
 __pycache__

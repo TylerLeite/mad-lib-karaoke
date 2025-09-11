@@ -10,6 +10,17 @@ input {
     height: 31px;
 }
 
+.label-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.label-wrapper .number {
+    width: 50px;
+}
+
 p.label {
     height: 32px;
     display: flex;
@@ -31,7 +42,7 @@ p.label {
     display: flex;
     flex-flow: row nowrap;
     margin-top: 2.5vh;
-    width: 60%;
+    width: 75%;
     justify-content: center;
 }
 
@@ -40,6 +51,7 @@ p.label {
     font-size: 36px;
     display: flex;
     align-items: center;
+    margin-top: 5vh;
 }
 
 .inputs, .labels {
@@ -51,9 +63,45 @@ p.label {
     margin-right: 15px;
 }
 
+.input-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
 input {
     border-bottom: 1px solid white;
     font-size: 24px;
+}
+
+.syllable-hint {
+    cursor: help;
+    margin-left: 15px;
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.syllable-hint .hover {
+    display: none;
+}
+
+.syllable-hint:hover .hover {
+    display: flex;
+    position: absolute;
+    left: 40px;
+    white-space: nowrap;
+}
+
+.syllable-hint .unhover {
+    font-size: 16px;
+    display: flex;
+    border-radius: 100%;
+    border: 1px dotted white;
+    width: 24px;
+    height: 24px;
+    padding-top: 1px;
+    align-items: center;
+    justify-content: center;
 }
 
 button.submit {
@@ -62,6 +110,9 @@ button.submit {
     border: 1px solid white;
     padding: 5px;
     border-radius: 4px;
+
+    margin-bottom: 5vh;
+    margin-top: 5vh;
 }
 
 button.submit:hover {

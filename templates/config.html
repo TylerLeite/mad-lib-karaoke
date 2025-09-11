@@ -85,7 +85,7 @@
             }
         }
 
-        function selectWord(attr) {
+        function selectWord(attr, n_syllables) {
             for (const w of state.selectedWords) {
                 if (w.baseWordKey == attr) {
                     return;
@@ -99,6 +99,7 @@
                 prompt: undefined,
                 replaceWith: text,
                 color: state.currentColor,
+                syllables: n_syllables,
             });
 
             state.currentColor = nToColor(state.colorCounter);
@@ -218,7 +219,7 @@
                             data-text="{{word.attr}}"
                             onmouseover="hover('{{word.attr}}')"
                             onmouseout="unhover('{{word.attr}}')"
-                            onclick="selectWord('{{word.attr}}')"
+                            onclick="selectWord('{{word.attr}}', '{{word.n_syllables}}')"
                         >
                             {{ word.prenctuation }}{{ word.word }}{{ word.punctuation }}&nbsp;
                         </p>

@@ -66,6 +66,7 @@ def madlib_create(song_id):
             "baseWordKey": word["baseWordKey"],
             "prompt": word["prompt"],
             "replaceWith": "",
+            "syllables": word["syllables"],
         })
 
     madlib_entry = {
