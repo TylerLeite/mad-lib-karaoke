@@ -41,7 +41,7 @@ def get_config():
     return DB["config"]
 
 def get_song(id):
-    for song in get_songs():
+    for song in get_all_songs():
         if song["id"] == id:
             return song
     return None

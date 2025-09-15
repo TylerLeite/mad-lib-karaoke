@@ -23,6 +23,22 @@ body {
     margin-bottom: 5vh;
 }
 
+.search {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid white;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 8px;
+}
+
+.search input {
+    padding: 5px;
+    font-size: 24px;
+}
+
 .list {
     display: flex;
     flex-flow: column nowrap;

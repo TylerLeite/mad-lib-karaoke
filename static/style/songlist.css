@@ -1,3 +1,15 @@
+.list {
+    width: 50vw;
+}
+
+.list-item {
+    justify-content: center;
+}
+
+.hidden {
+    display: none;
+}
+
 .list-item > p {
     margin: 0 4px;
 }

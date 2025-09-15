@@ -4,6 +4,22 @@
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style/songlist.css') }}">
+    
+    <script>
+        function filter(searchText) {
+            const expr = new RegExp(searchText.toLowerCase().replace(/[|\\{}()[\]^$+*?.]/g, '\\$&'));
+            const songEls = document.querySelectorAll(".list-item");
+            for (const el of songEls) {
+                const artist = el.getAttribute("data-artist").toLowerCase();
+                const title = el.getAttribute("data-title").toLowerCase();
+                if (artist.search(expr) != -1 || title.search(expr) != -1) {
+                    el.classList.toggle("hidden", false);
+                } else {
+                    el.classList.toggle("hidden", true);
+                }
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -16,10 +32,17 @@
         </span>
     </span>
 
+    <span class="search">
+        <img class="icon" src="{{url_for('static', filename='icons/search.svg')}}">
+        <input type="text" onkeyup="filter(this.value)">
+    </span>
+
     <span class="list">
         {% for song in songs %}
         <span
             class="list-item{% if not song.has_template %} missing{% endif %}"
+            data-artist="{{song.artist}}"
+            data-title="{{song.title}}"
             onclick="window.location='/{{mode}}/{{song.id}}'"
         >
             <p>{{song.artist}}</p>
