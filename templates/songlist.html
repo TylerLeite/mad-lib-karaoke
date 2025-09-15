@@ -19,7 +19,7 @@
     <span class="list">
         {% for song in songs %}
         <span
-            class="list-item"
+            class="list-item{% if not song.has_template %} missing{% endif %}"
             onclick="window.location='/{{mode}}/{{song.id}}'"
         >
             <p>{{song.artist}}</p>

@@ -19,7 +19,7 @@ def index():
 
 @app.route("/config")
 def config():
-    return render_template("songlist.html", mode="config", songs=db.get_songs())
+    return render_template("songlist.html", mode="config", songs=db.get_all_songs())
 
 @app.route("/config/<song>", methods=["GET", "POST"])
 def config_song(song):
@@ -38,7 +38,7 @@ def madliblist():
 
 @app.route("/madlib")
 def songlist():
-    return render_template("songlist.html", mode="madlib", songs=db.get_songs())
+    return render_template("songlist.html", mode="madlib", songs=db.get_songs_with_templates())
 
 @app.route("/madlib/<song>")
 def madlib(song):

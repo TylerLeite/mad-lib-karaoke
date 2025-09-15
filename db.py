@@ -10,6 +10,14 @@ def initdb(CFG):
     with open(DB["config"]["song_index"], "rb") as json_file:
         DB["songs"] = [song for song in json.load(json_file) if not "hidden" in song]
 
+        for song in DB["songs"]:
+            template_filen = f'{DB["config"]["madlib_template_dir"]}{song["id"]}.json'
+            if os.path.isfile(template_filen):
+                song["has_template"] = True
+            else:
+                song["has_template"] = False
+
+
 def get_template_str(song_id):
     template_filen = f'{DB["config"]["madlib_template_dir"]}{song_id}.json'
     out = "{}"
@@ -38,9 +46,19 @@ def get_song(id):
             return song
     return None
 
-def get_songs():
+def get_all_songs():
     return sorted(DB["songs"], key=lambda x: x["artist"])
     # return DB["songs"]
+
+def get_songs_with_templates():
+    all_songs = get_all_songs()
+    songs = []
+    for song in all_songs:
+        if get_template(song["id"]) == {}:
+            continue
+        else:
+            songs.append(song)
+    return songs
 
 def get_madlibs():
     madlib_dir = f'{DB["config"]["filled_madlib_dir"]}'
