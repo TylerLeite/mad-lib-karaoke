@@ -262,16 +262,23 @@ class WordReplacement:
         else:
             return self.word.track_idx < other.word.track_idx
 
-def construct_madlib_file(out_filen, midi_filen, madlib):
+def replace_in_title(key, replaceWith, title):
+    new_title = []
+    for word in title:
+        attr = attr_code(word)
+        if attr == key:
+            new_title.append(replaceWith.title())
+        else:
+            new_title.append(word)
+    return new_title
+
+def construct_madlib_file(ofd, midi_filen, madlib):
     midi = MIDIFile(midi_filen)
     midi.parse()
     word_dict, _ = generate_word_dict(midi)
 
-    # madlib = {}
-    # with open(madlib_filen) as madlib_file:
-    #     madlib = json.load(madlib_file)["fillings"]
-
     replacements = []
+    out_title_words = ofd["title"].split(' ')
     for m in madlib:
         key = m["baseWordKey"]
         new_text = m["replaceWith"]
@@ -279,6 +286,7 @@ def construct_madlib_file(out_filen, midi_filen, madlib):
         words = word_dict[key]
         for word in words:
             replacements.append(WordReplacement(word, new_text))
+            out_title_words = replace_in_title(key, new_text, out_title_words)
     
     # sort replacements such that highest event_idx[0] is at the front
     replacements = sorted(replacements, reverse=True)
@@ -292,7 +300,12 @@ def construct_madlib_file(out_filen, midi_filen, madlib):
     for i in range(len(in_words)):
         replace_one_word(midi, in_words[i], new_texts[i])
 
-    midi.export(out_filen)
+
+    # ofd = out_filen_data
+    ofd["title"] = "_".join(out_title_words)
+    out_filen = f"{ofd['title']}_sung_by_{ofd['singer']}_filled_by_{ofd['author']}__{ofd['id']}.kar"
+
+    midi.export(ofd["dir"] + out_filen)
     
 
 # tide goes in, tide goes out. can't explain it

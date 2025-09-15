@@ -65,10 +65,15 @@ def export(id):
     song = db.get_song(madlib["song"])
     midi_filen = db.get_config()["karaoke_dir"] + song["filen"]
 
-    out_dir = db.get_config()["madlib_dir"]
-    out_filen = f"{song['title']}_{madlib['singer_name']}_{madlib['author_name']}_{madlib['id']}.kar"
+    out_filen_data = {
+        "dir": db.get_config()["madlib_dir"],
+        "title": song["title"],
+        "singer": madlib["singer_name"],
+        "author": madlib["author_name"],
+        "id": madlib["id"],
+    }    
 
-    extract.construct_madlib_file(out_dir + out_filen, midi_filen, madlib["fillings"])
+    extract.construct_madlib_file(out_filen_data, midi_filen, madlib["fillings"])
 
     return { "status": 200 }
 
